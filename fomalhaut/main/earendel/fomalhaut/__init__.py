@@ -1,0 +1,1 @@
+from .Fomalhaut import Fomalhaut

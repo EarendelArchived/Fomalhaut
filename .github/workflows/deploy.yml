@@ -1,0 +1,85 @@
+#file: noinspection YAMLSchemaValidation
+name: Deploy to cloudtype
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+jobs:
+  deploy:
+    if: "!startsWith(github.event.commits[0].message, '[CI-Skip]')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Connect with deploy key
+        uses: cloudtype-github-actions/connect@v1
+        with:
+          token: ${{ secrets.CT_PAT }}
+          ghtoken: ${{ secrets.GH_PAT }}
+
+      - name: Deploy to cloudtype
+        uses: cloudtype-github-actions/deploy@v1
+        with:
+          token: ${{ secrets.CT_PAT }}
+          project: alphakr93/fomalhaut
+          stage: main
+          yaml: |
+            name: fomalhaut
+            app: python@3.11
+            options:
+              ports: 80
+              install: pip3 install -r requirements.txt
+              start: python3 Fomalhaut.py
+              env:
+                - name: TOKEN_LOGGER
+                  value: ${{ secrets.TOKEN_LOGGER }}
+            
+                - name: TWITCH_CLI_ID
+                  value: ${{ secrets.TWITCH_CLI_ID }}
+                - name: TWITCH_SECRET
+                  value: ${{ secrets.TWITCH_SECRET }}
+            
+                - name: TOKEN_NEWS
+                  value: ${{ secrets.TOKEN_NEWS }}
+                - name: TOKEN_MDD
+                  value: ${{ secrets.TOKEN_MDD }}
+                - name: TOKEN_MCC
+                  value: ${{ secrets.TOKEN_MCC }}
+                - name: TOKEN_HEYST
+                  value: ${{ secrets.TOKEN_HEYST }}
+                - name: TOKEN_PABLO
+                  value: ${{ secrets.TOKEN_PABLO }}
+                - name: TOKEN_EARENDEL
+                  value: ${{ secrets.TOKEN_EARENDEL }}
+                - name: TOKEN_FOMALHAUT
+                  value: ${{ secrets.TOKEN_FOMALHAUT }}
+                - name: TOKEN_PLAZMA
+                  value: ${{ secrets.TOKEN_PLAZMA }}
+                - name: TOKEN_ALPHABOT
+                  value: ${{ secrets.TOKEN_ALPHABOT }}
+            
+                - name: BETA_TOKEN_NEWS
+                  value: ${{ secrets.BETA_TOKEN_NEWS }}
+                - name: BETA_TOKEN_MDD
+                  value: ${{ secrets.BETA_TOKEN_MDD }}
+                - name: BETA_TOKEN_MCC
+                  value: ${{ secrets.BETA_TOKEN_MCC }}
+                - name: BETA_TOKEN_HEYST
+                  value: ${{ secrets.BETA_TOKEN_HEYST }}
+                - name: BETA_TOKEN_PABLO
+                  value: ${{ secrets.BETA_TOKEN_PABLO }}
+                - name: BETA_TOKEN_EARENDEL
+                  value: ${{ secrets.BETA_TOKEN_EARENDEL }}
+                - name: BETA_TOKEN_FOMALHAUT
+                  value: ${{ secrets.BETA_TOKEN_FOMALHAUT }}
+                - name: BETA_TOKEN_PLAZMA
+                  value: ${{ secrets.BETA_TOKEN_PLAZMA }}
+                - name: BETA_TOKEN_ALPHABOT
+                  value: ${{ secrets.BETA_TOKEN_ALPHABOT }}
+            
+            context:
+              git:
+                url: git@github.com:${{ github.repository }}.git
+                ref: ${{ github.ref }}

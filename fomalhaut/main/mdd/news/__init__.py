@@ -1,0 +1,1 @@
+from .MinecraftNews import MinecraftNews
