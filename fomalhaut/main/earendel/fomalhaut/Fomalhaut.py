@@ -10,7 +10,6 @@ from ....module.etc.AsciiBuilder import to_gothic as _gothic
 from ....module.instance import Instance as _Instance
 from ....module.instance import Itr as _Itr
 from ....module.instance.handlers.message.embed import Embed as _Embed
-from ....module.instance.handlers.message.embed import FieldElement as _Field
 from ....module.instance.handlers.message.embed import ColourElement as _Colour
 from ....module.instance.handlers.ActivityHandler import ActivityHandler as _Activity
 from ....module.api.youtube.YouTubeHandler import YouTubeHandler as _Handler
