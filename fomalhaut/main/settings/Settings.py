@@ -142,7 +142,8 @@ class Settings:
                 "Fomalhaut": {
                     "token": token.get("Fomalhaut", True),
                     "kurzgesagt": {
-                        "profile_art": "",
+                        "profile_art": "https://yt3.googleusercontent.com/ytc"
+                                       "/AGIKgqOibtncbyNaJVeUjVotNRl0r00hkiUfYEEv5XmNdw=s176-c-k-c0x00ffffff-no-rj",
                         "config": _YouTube(
                             target="sXVk37bltHxD1rDPwtNM8Q",
                             target_id="kurzgesagt",
@@ -152,7 +153,9 @@ class Settings:
                         )
                     },
                     "kurzgesagt_kr": {
-                        "profile_art": "",
+                        "profile_art": "https://yt3.googleusercontent.com/K"
+                                       "-pv54AhA522aZ6Y3kCBAnm1lELzYBk3kdty0btdqJz_sGw84QSADGWMzm9WL_d99FakKxM9=s176"
+                                       "-c-k-c0x00ffffff-no-rj-mo",
                         "config": _YouTube(
                             target="8rKCy_tipwTEY3RdkNCKmw",
                             target_id="kurzgesagt_kr",
@@ -162,7 +165,9 @@ class Settings:
                         )
                     },
                     "veritasium": {
-                        "profile_art": "",
+                        "profile_art": "https://yt3.googleusercontent.com/NTznCeiNkTcJ"
+                                       "-UHADnDiNbYf267PuQKyu3jsBhbTm6QvCs4sX7im7Vpt_ZhLW1yA6Qj6pqXn=s176-c-k"
+                                       "-c0x00ffffff-no-rj",
                         "config": _YouTube(
                             target="OgK3J7WTOl5f5Fd51kcoSg",
                             target_id="veritasium_kor",
