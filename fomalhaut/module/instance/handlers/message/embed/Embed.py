@@ -60,10 +60,3 @@ class Embed(_Embed):
             for i in fields:
                 if i is not None:
                     i.append(self)
-
-    @classmethod
-    def from_dict(cls, data: dict) -> _Self:
-        return super().from_dict(data)
-
-    def to_dict(self) -> dict:
-        return super().to_dict()
