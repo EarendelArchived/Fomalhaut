@@ -31,7 +31,7 @@ class Fomalhaut(_Instance):
         self.handler: _Handler = _Handler(self)
         self.testhandler: _Nullable[_TwitchHandler] = None
         super().__init__(settings, "earendel", "Fomalhaut", _Activity("idle", "playing", "프로그래밍"))
-        
+
     async def on_ready(self) -> None:
         @self.handler.append
         def this() -> _handleable():
@@ -39,9 +39,7 @@ class Fomalhaut(_Instance):
 
         @self.handler.append
         def this() -> _handleable():
-            return (
-                "kurzgesagt_kr", self.settings['kurzgesagt_kr']['config']
-            )
+            return "kurzgesagt_kr", self.settings['kurzgesagt_kr']['config']
 
         @self.handler.append
         def this() -> _handleable():
@@ -102,8 +100,8 @@ class Fomalhaut(_Instance):
             async def process_manual_send(i: _Itr, target: str) -> None:
                 if await self.handler.handle(target, True):
                     await i.followup.send(embed=_Embed(
-                            title="성공적으로 영상 업로드 알림을 보냈습니다.", colour=_Colour.green()
-                        ))
+                        title="성공적으로 영상 업로드 알림을 보냈습니다.", colour=_Colour.green()
+                    ))
 
             @g.command(name="kurzgesagt", description="쿠르츠게작트 메인 채널 영상 알림을 전송합니다.")
             async def that(i: _Itr) -> None:
@@ -117,7 +115,7 @@ class Fomalhaut(_Instance):
                     await process_manual_send(i, "kurzgesagt_kr")
                 await self.process(i, main)
 
-            @g.command(name="veritasium", description="베리타시움 한국 채널 영상 알림을 전송합니다.",)
+            @g.command(name="veritasium", description="베리타시움 한국 채널 영상 알림을 전송합니다.")
             async def that(i: _Itr) -> None:
                 async def main() -> None:
                     await process_manual_send(i, "veritasium")
