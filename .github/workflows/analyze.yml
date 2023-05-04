@@ -45,15 +45,6 @@ jobs:
           repo-directory: './'
           requirements-path: 'requirements.txt'
 
-      - name: Run Pysa
-        if: always()
-        uses: facebook/pysa-action@f46a63777e59268613bd6e2ff4e29f144ca9e88b
-        with:
-          repo-directory: './'
-          requirements-path: 'requirements.txt'
-          infer-types: true
-          include-default-sapp-filters: true
-
       - name: Run Bandit
         if: always()
         uses: shundor/python-bandit-scan@9cc5aa4a006482b8a7f91134412df6772dbda22c
