@@ -33,9 +33,6 @@ jobs:
           languages: ${{ matrix.language }}
           queries: "security-and-quality"
 
-      - name: Review Dependency
-        uses: actions/dependency-review-action@v2
-
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
