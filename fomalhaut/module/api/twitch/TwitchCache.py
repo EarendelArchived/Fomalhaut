@@ -90,7 +90,7 @@ class TwitchCache(_Interface):
         return await super().fail()
 
     async def update(
-            self, start: _datetime, cache_id: list[list[int]] = None, embed: _Embed = None
+            self, start: _datetime, cache_id: _Nullable[list[list[int]]] = None, embed: _Nullable[_Embed] = None
     ) -> _Self:
         """
         캐시 정보를 업데이트합니다.

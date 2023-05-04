@@ -6,6 +6,7 @@ from .element import AuthorElement as _Author
 from .element import ColourElement as _Color
 from .element import FieldElement as _Field
 from .element import FooterElement as _Footer
+from .....core import Self as _Self
 from .....core import Nullable as _Nullable
 
 
@@ -59,3 +60,10 @@ class Embed(_Embed):
             for i in fields:
                 if i is not None:
                     i.append(self)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> _Self:
+        return super().from_dict(data)
+
+    def to_dict(self) -> dict:
+        return super().to_dict()

@@ -45,8 +45,8 @@ class TwitchListener(_Interface):
                 )
                 if type(handled) == dict:
                     return handled
-                else:
-                    raise TypeError(f"Respond is not dict, but {type(handled)}")
+                raise TypeError(f"Respond is not dict, but {type(handled)}")
+            raise ValueError("OAuth is empty")
         except Exception as e:
             await self.throw(e, "handle")
             return {}

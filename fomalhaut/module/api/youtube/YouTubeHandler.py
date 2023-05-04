@@ -128,5 +128,9 @@ class YouTubeHandler(_Interface):
                 return self
             except Exception as e:
                 await self.throw(e, "handle.send")
+                await self.cache.fail()
+                return self
         except Exception as e:
             await self.throw(e, "handle")
+            await self.cache.fail()
+            return self
