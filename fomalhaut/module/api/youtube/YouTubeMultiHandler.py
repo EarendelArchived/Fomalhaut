@@ -22,3 +22,4 @@ class YouTubeMultiHandler(_Interface):
         for i in self.target:
             if i[0] == name:
                 return (await i[1].handle(force)).cache.success
+        return False
