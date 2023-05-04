@@ -4,6 +4,7 @@ from discord import File as _Attachment
 
 from .TwitchCache import TwitchCache as _Cache
 from .TwitchListener import TwitchListener as _Listener
+from ...core import Self as _Self
 from ...core import Final as _Final
 from ...core import Nullable as _Nullable
 from ...datetime import Timezone as _Timezone
@@ -15,6 +16,7 @@ from ...instance.handlers.message.embed import AuthorElement as _Author
 from ...instance.handlers.message.embed import ColourElement as _Colour
 from ...instance.handlers.message.embed import Embed as _Embed
 from ...instance.handlers.message.embed import FieldElement as _Field
+from ....main.settings.component.TwitchComponent import TwitchComponent as _SetComp
 
 
 class TwitchHandler(_Interface):
@@ -25,16 +27,15 @@ class TwitchHandler(_Interface):
     -----------
     instance: Instance
         인스턴스
-
-    Attributes
-    -----------
-    _listener: Listener
-        트위치 API 리스너
+    target: TwitchComponent
+        대상 트위치 정보
     """
 
-    def __init__(self, instance: _Instance):
+    def __init__(self, instance: _Instance, target: _SetComp):
         super().__init__(instance, "TwitchHandler")
-        self._listener: _Final[_Listener] = _Listener(instance)
+        self._listener: _Final[_Listener] = _Listener(instance, target.target)
+        self._target: _Final[_SetComp] = target
+        self.cache: _Cache = _Cache(instance, target.target)
 
     async def _handle_not_streaming(self, cache: _Cache) -> _Cache:
         """
@@ -46,15 +47,15 @@ class TwitchHandler(_Interface):
             캐시
         """
         try:
-            if not cache.handled_id and cache.start is not None:
+            if not cache.id and cache.start is not None:
                 await self.instance.send_to(
-                    "", edit_target=cache.handled_id,
+                    "", edit_target=cache.id,
                     embed=_Field(
                         "종료", _Timezone.KST.apply(_datetime.now()).strftime("%Y년 %m월 %d일 %p %I:%M:%S")
                     ).append(
                         _Field(
                             "업타임", _strfdelta(_iso(_datetime.now()) - cache.start)
-                        ).append(cache.handled_embed)
+                        ).append(cache.embed)
                     )
                 )
             return await cache.not_streaming()
@@ -62,14 +63,12 @@ class TwitchHandler(_Interface):
             await self.throw(e, "handle.notStreaming")
             return await cache.fail()
 
-    async def handle(self, cache: _Cache, force: bool = False) -> _Cache:
+    async def handle(self, force: bool = False) -> _Self:
         """
         API 리스너를 통해 방송 정보를 공지합니다.
 
         Parameters
         ----------
-        cache: TwitchCache
-            캐시
         force: bool
             강제 공지 여부
         """
@@ -78,31 +77,35 @@ class TwitchHandler(_Interface):
                 handled: dict = await self._listener.handle()
             except Exception as e:
                 await self.throw(e, "handle.getResponse")
-                return await cache.fail()
+                await self.cache.fail()
+                return self
 
             try:
                 handled = handled["data"][0]
             except (KeyError, IndexError):
-                return await self._handle_not_streaming(cache)
+                await self._handle_not_streaming(self.cache)
+                return self
             except Exception as e:
                 await self.throw(e, "handle.handleResponse")
-                return await cache.fail()
+                await self.cache.fail()
+                return self
             else:
                 if handled["type"] != 'live':
-                    return await self._handle_not_streaming(cache)
+                    await self._handle_not_streaming(self.cache)
+                    return self
 
                 start: _datetime = _datetime.fromisoformat(handled["started_at"])
-                settings: dict = self.instance.settings
 
-                flag: bool = type(cache.start) is _datetime and start > cache.start
+                flag1: bool = type(self.cache.start) is _datetime and start > self.cache.start
+                flag2: bool = self.cache.start is None
 
-                if flag or force:
+                if flag1 or flag2 or force:
                     embed: _Embed = _Embed(
-                        title=handled["title"], url=f"https://twitch.tv/{settings['twitch'].target}",
-                        colour=_Colour(0x9147FF), profile=settings['profile_art'], footer=self.instance.footer,
+                        title=handled["title"], url=f"https://twitch.tv/{self._target.target}",
+                        colour=_Colour(0x9147FF), profile=self._target.profile_art, footer=self.instance.footer,
                         author=_Author(
                             handled['user_name'],
-                            f"https://twitch.tv/{settings['twitch'].target}",
+                            f"https://twitch.tv/{self._target.target}",
                             self._listener.settings.icon
                         ),
                         fields=[
@@ -113,19 +116,22 @@ class TwitchHandler(_Interface):
                         ]
                     )
 
-                    message = settings['twitch'].message
+                    message = self._target.message
                     if message != "":
                         message += "\n"
-                    message += f"https://twitch.tv/{settings['twitch'].target}"
+                    message += f"https://twitch.tv/{self._target.target}"
 
-                    return await cache.update(start, await self.instance.send_to(
-                        message, settings['twitch'].send, embed=embed, file=(await self._handle_img(cache))
+                    await self.cache.update(start, await self.instance.send_to(
+                        message, self._target.send, embed=embed, file=(await self._handle_img(self.cache))
                     ), embed)
+                    return self
 
-                return await cache.update(start)
+                await self.cache.update(start)
+                return self
         except Exception as e:
             await self.throw(e, "handle")
-            return await cache.fail()
+            await self.cache.fail()
+            return self
 
     async def _handle_img(self, cache: _Cache) -> _Nullable[_Attachment]:
         """
@@ -137,7 +143,7 @@ class TwitchHandler(_Interface):
             캐시
         """
         try:
-            target: str = self.instance.settings['twitch'].target
+            target: str = self._target.target
             cache.img_handler.writebyte(await self._listener.handler.handle(
                 f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{target}-1920x1080.jpg",
                 return_type=self._listener.handler.ReturnType.BYTE

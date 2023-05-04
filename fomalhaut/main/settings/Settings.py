@@ -85,11 +85,11 @@ class Settings:
 
                 "MCC": {
                     "token": token.get("MCC", True),
-                    "profile_art": "https://cdn.discordapp.com/attachments/1002906305947779072/1096361853506031636"
-                                   "/channels4_profile.jpg",
                     "youtube": _YouTube(
                         target="-N4fGYpAmvfn2Y02WlAV9A",
                         target_id="armung",
+                        profile_art="https://cdn.discordapp.com/attachments/1002906305947779072/1096361853506031636"
+                                    "/channels4_profile.jpg",
                         message="**새로운 영상이 업로드 되었습니다!**",
                         description="구독 좋아요 :)",
                         send=[1095728069043552337]
@@ -104,10 +104,10 @@ class Settings:
             self.broadcast: _Final[dict] = {
                 "Heyst": {
                     "token": token.get("Heyst", True),
-                    "profile_art": "https://cdn.discordapp.com/attachments/1002906305947779072/1096062447997165729"
-                                   "/unnamed.jpg",
                     "twitch": _Twitch(
                         target="heyst1000",
+                        profile_art="https://cdn.discordapp.com/attachments/1002906305947779072/1096062447997165729"
+                                    "/unnamed.jpg",
                         message="<@&959530237299945524> **헤이스트님이 생방송을 시작했습니다!**",
                         offline="<@&959530237299945524> 헤이스트님의 방송이 {}에 종료되었습니다.",
                         send=[1095728069043552337]
@@ -115,6 +115,8 @@ class Settings:
                     "youtube": _YouTube(
                         target="aiyyjmlyH70au7pzKE4jnQ",
                         target_id="heyst99",
+                        profile_art="https://cdn.discordapp.com/attachments/1002906305947779072/1096062447997165729"
+                                    "/unnamed.jpg",
                         message="<@&959530104634101821> **헤이스트님 유튜브에 영상이 업로드 되었습니다!**",
                         description="",
                         send=[1095728069043552337]
@@ -123,10 +125,10 @@ class Settings:
 
                 "Pablo": {
                     "token": token.get("Pablo", True),
-                    "profile_art": "https://cdn.discordapp.com/attachments/1002906305947779072/1096062447682601020"
-                                   "/ceb6f1fc70b9ff1944e1eb0112329eb0.webp",
                     "twitch": _Twitch(
                         target="pablo_kr_",
+                        profile_art="https://cdn.discordapp.com/attachments/1002906305947779072/1096062447682601020"
+                                    "/ceb6f1fc70b9ff1944e1eb0112329eb0.webp",
                         message="<@&1076385255486926929> **파블로님이 생방송을 시작했습니다!**",
                         offline="<@&1076385255486926929> 파블로님의 방송이 {}에 종료되었습니다.",
                         send=[1095728069043552337]
@@ -142,35 +144,35 @@ class Settings:
                 "Fomalhaut": {
                     "token": token.get("Fomalhaut", True),
                     "kurzgesagt": {
-                        "profile_art": "https://yt3.googleusercontent.com/ytc"
-                                       "/AGIKgqOibtncbyNaJVeUjVotNRl0r00hkiUfYEEv5XmNdw=s176-c-k-c0x00ffffff-no-rj",
                         "config": _YouTube(
                             target="sXVk37bltHxD1rDPwtNM8Q",
                             target_id="kurzgesagt",
+                            profile_art="https://yt3.googleusercontent.com/ytc"
+                                        "/AGIKgqOibtncbyNaJVeUjVotNRl0r00hkiUfYEEv5XmNdw=s176-c-k-c0x00ffffff-no-rj",
                             message="",
                             description="",
                             send=[1102836058414125087]
                         )
                     },
                     "kurzgesagt_kr": {
-                        "profile_art": "https://yt3.googleusercontent.com/K"
-                                       "-pv54AhA522aZ6Y3kCBAnm1lELzYBk3kdty0btdqJz_sGw84QSADGWMzm9WL_d99FakKxM9=s176"
-                                       "-c-k-c0x00ffffff-no-rj-mo",
                         "config": _YouTube(
                             target="8rKCy_tipwTEY3RdkNCKmw",
                             target_id="kurzgesagt_kr",
+                            profile_art="https://yt3.googleusercontent.com/K"
+                                        "-pv54AhA522aZ6Y3kCBAnm1lELzYBk3kdty0btdqJz_sGw84QSADGWMzm9WL_d99FakKxM9=s176"
+                                        "-c-k-c0x00ffffff-no-rj-mo",
                             message="",
                             description="",
                             send=[1102836058414125087]
                         )
                     },
                     "veritasium": {
-                        "profile_art": "https://yt3.googleusercontent.com/NTznCeiNkTcJ"
-                                       "-UHADnDiNbYf267PuQKyu3jsBhbTm6QvCs4sX7im7Vpt_ZhLW1yA6Qj6pqXn=s176-c-k"
-                                       "-c0x00ffffff-no-rj",
                         "config": _YouTube(
                             target="OgK3J7WTOl5f5Fd51kcoSg",
                             target_id="veritasium_kor",
+                            profile_art="https://yt3.googleusercontent.com/NTznCeiNkTcJ"
+                                        "-UHADnDiNbYf267PuQKyu3jsBhbTm6QvCs4sX7im7Vpt_ZhLW1yA6Qj6pqXn=s176-c-k"
+                                        "-c0x00ffffff-no-rj",
                             message="",
                             description="",
                             send=[1102836058414125087]

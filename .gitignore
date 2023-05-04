@@ -263,7 +263,7 @@ pyrightconfig.json
 
 # Custom
 .cache/
-debug.py
+labortary/*
 
 ### PythonVanilla ###
 # Byte-compiled / optimized / DLL files

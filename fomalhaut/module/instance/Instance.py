@@ -116,7 +116,10 @@ class Instance(_main.Client):
             await func()
         except Exception as e:
             handled: _HandledMsg = self.handle_exc(e, f"Command.{interaction.command.name}")
-            await interaction.followup.send(handled.content, embed=handled.embed, file=handled.file)
+            if handled.file is None:
+                await interaction.followup.send(handled.content, embed=handled.embed)
+            else:
+                await interaction.followup.send(handled.content, embed=handled.embed, file=handled.file)
 
     async def send(self, handled: _HandledMsg) -> None:
         """
@@ -244,7 +247,7 @@ class Instance(_main.Client):
         """
         스케줄러를 시작합니다.
         """
-        if not self._tasks:
+        if self._tasks:
             await _timeout(0)
             status: bool = True
             while status:

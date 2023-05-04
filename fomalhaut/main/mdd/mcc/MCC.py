@@ -28,7 +28,7 @@ class MCC(_Instance):
         """
         인스턴스가 준비되면 호출됩니다.
         """
-        self.api_handler = _Handler(self, self.settings['youtube'], self.settings['profile_art'])
+        self.api_handler = _Handler(self, self.settings['youtube'])
         await super().on_ready()
 
     def schedules(self) -> None:

@@ -13,9 +13,17 @@
   - `./fomalhaut/` 외부 파일의 변화가 생긴 경우
   - 코드 서식, 타겟 정보 등이 변화한 경우
 
+#### 실험용 코드
+`./labortary/` 디렉토리에 실험용 코드를 생성합니다.
+
 ### 0.1.0.0
 - Initial Commit
 
 ### 0.1.0.1
 - Fomalhaut
   - Kurzgesagt, Kurzgesagt Korea, Veritasium Korea 채널 프로필 이미지 추가
+
+### 0.2.0.0
+- All
+  - Twitch API 동기화 되지 않는 문제 해결, 캐시 문제 해결
+  - 기타 코드 개선

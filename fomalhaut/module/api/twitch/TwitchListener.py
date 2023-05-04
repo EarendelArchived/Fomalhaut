@@ -23,10 +23,11 @@ class TwitchListener(_Interface):
         웹 요청을 처리하는 핸들러
     """
 
-    def __init__(self, instance: _Instance):
+    def __init__(self, instance: _Instance, target: str):
         super().__init__(instance, "TwitchListener")
         self.settings: _Final[_Settings] = instance.main.api.twitch
         self.handler: _Final[_Handler] = _Handler(instance)
+        self._target: _Final[str] = target
 
     async def handle(self) -> dict:
         """
@@ -36,7 +37,7 @@ class TwitchListener(_Interface):
             oauth: str = await self._oauth()
             if oauth != "":
                 handled: dict = await self.handler.handle(
-                    f"https://api.twitch.tv/helix/streams?user_login={self.instance.settings['twitch'].target}",
+                    f"https://api.twitch.tv/helix/streams?user_login={self._target}",
                     header={
                         "Client-Id": self.settings.cli_id,
                         "Authorization": f"Bearer {oauth}"

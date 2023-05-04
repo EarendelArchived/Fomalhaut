@@ -12,7 +12,9 @@ from ....module.instance import Itr as _Itr
 from ....module.instance.handlers.message.embed import Embed as _Embed
 from ....module.instance.handlers.message.embed import ColourElement as _Colour
 from ....module.instance.handlers.ActivityHandler import ActivityHandler as _Activity
-from ....module.api.youtube.YouTubeHandler import YouTubeHandler as _Handler
+from ....module.api.twitch.TwitchHandler import TwitchHandler as _TwitchHandler
+from ....module.api.youtube.YouTubeMultiHandler import handleable as _handleable
+from ....module.api.youtube.YouTubeMultiHandler import YouTubeMultiHandler as _Handler
 
 
 class Fomalhaut(_Instance):
@@ -26,46 +28,39 @@ class Fomalhaut(_Instance):
     """
 
     def __init__(self, settings: _Settings):
-        self.kurzgesagt: _Nullable[_Handler] = None
-        self.kurzgesagt_kr: _Nullable[_Handler] = None
-        self.veritasium: _Nullable[_Handler] = None
+        self.handler: _Handler = _Handler(self)
+        self.testhandler: _Nullable[_TwitchHandler] = None
         super().__init__(settings, "earendel", "Fomalhaut", _Activity("idle", "playing", "프로그래밍"))
         
     async def on_ready(self) -> None:
-        self.kurzgesagt = _Handler(
-            self, self.settings['kurzgesagt']['config'], self.settings['kurzgesagt']['profile_art']
-        )
-        self.kurzgesagt_kr = _Handler(
-            self, self.settings['kurzgesagt_kr']['config'], self.settings['kurzgesagt_kr']['profile_art']
-        )
-        self.veritasium = _Handler(
-            self, self.settings['veritasium']['config'], self.settings['veritasium']['profile_art']
-        )
-        await super().on_ready()
+        @self.handler.append
+        def this() -> _handleable():
+            return "kurzgesagt", self.settings['kurzgesagt']['config']
 
-    async def handle_api(self, target: str, force: bool = False) -> bool:
-        match target:
-            case "kurzgesagt":
-                return (await self.kurzgesagt.handle(force)).cache.success
-            case "kurzgesagt_kr":
-                return (await self.kurzgesagt_kr.handle(force)).cache.success
-            case "veritasium":
-                return (await self.veritasium.handle(force)).cache.success
-            case _:
-                raise ValueError(f"Invalid target: {target}")
+        @self.handler.append
+        def this() -> _handleable():
+            return (
+                "kurzgesagt_kr", self.settings['kurzgesagt_kr']['config']
+            )
+
+        @self.handler.append
+        def this() -> _handleable():
+            return "veritasium", self.settings['veritasium']['config']
+
+        await super().on_ready()
 
     def schedules(self) -> None:
         @self.schedule
         async def this() -> bool:
-            return await self.handle_api("kurzgesagt")
+            return await self.handler.handle("kurzgesagt")
 
         @self.schedule
         async def this() -> bool:
-            return await self.handle_api("kurzgesagt_kr")
+            return await self.handler.handle("kurzgesagt_kr")
 
         @self.schedule
         async def this() -> bool:
-            return await self.handle_api("veritasium")
+            return await self.handler.handle("veritasium")
 
     def commands(self) -> None:
         @self.tree.command(name="create", description="고딕을 이름으로 한 채널을 생성합니다.")
@@ -105,7 +100,7 @@ class Fomalhaut(_Instance):
         @self.group("send_manually", "수동으로 영상 공지를 전송합니다.")
         def this(g: _Group) -> None:
             async def process_manual_send(i: _Itr, target: str) -> None:
-                if await self.handle_api(target, True):
+                if await self.handler.handle(target, True):
                     await i.followup.send(embed=_Embed(
                             title="성공적으로 영상 업로드 알림을 보냈습니다.", colour=_Colour.green()
                         ))

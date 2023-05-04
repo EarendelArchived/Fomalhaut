@@ -29,7 +29,7 @@ class YouTubeHandler(_Interface):
         인스턴스
     """
 
-    def __init__(self, instance: _Instance, target: _Target, profile: str):
+    def __init__(self, instance: _Instance, target: _Target):
         super().__init__(instance, "YouTubeListener")
         self._settings: _Final[_Settings] = instance.main.api.youtube
         self._handler: _Final[_Handler] = _Handler(instance)
@@ -37,7 +37,6 @@ class YouTubeHandler(_Interface):
         self.cache: _Cache = _Cache(instance, target)
 
         self._target: _Final[_Target] = target
-        self._profile: _Final[str] = profile
         self._rss: _Final[str] = f"https://www.youtube.com/feeds/videos.xml?channel_id=UC{target.target}"
 
     async def _handle_thumbnail(self, video_id: str, cache: _Cache) -> _Nullable[_Attachment]:
@@ -72,8 +71,6 @@ class YouTubeHandler(_Interface):
 
         Parameters
         ----------
-        cache: YouTubeCache
-            캐시
         force: Optional[bool]
             강제 게시 여부
         """
@@ -104,8 +101,8 @@ class YouTubeHandler(_Interface):
                 ):
                     embed: _Embed = _Embed(
                         title=response.title.get_text(), url=f"https://youtu.be/{video_id}", colour=_Colour(0xFD0000),
-                        desc=self._target.description, profile=self._profile, image="attachment://attachment.jpg",
-                        footer=self.instance.footer, author=_Author(
+                        desc=self._target.description, profile=self._target.profile_art,
+                        image="attachment://attachment.jpg", footer=self.instance.footer, author=_Author(
                             content=response.author.find("name").get_text(),
                             url=f"https://www.youtube.com/@{self._target.target_id}", icon=self._settings.icon
                         ), fields=[
