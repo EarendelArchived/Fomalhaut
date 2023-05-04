@@ -25,26 +25,34 @@ jobs:
 
     steps:
       - name: Checkout repository
+        id: checkout
         uses: actions/checkout@v3
 
       - name: Initialize CodeQL
+        id: init_codeql
+        needs: checkout
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
           queries: "security-and-quality"
 
       - name: Perform CodeQL Analysis
+        needs: [ init_codeql, checkout ]
         uses: github/codeql-action/analyze@v2
         with:
           category: "/language:${{matrix.language}}"
 
       - name: Run Pyre
+        if: always()
+        needs: [ checkout ]
         uses: facebook/pyre-action@60697a7858f7cc8470d8cc494a3cf2ad6b06560d
         with:
           repo-directory: './'
           requirements-path: 'requirements.txt'
 
       - name: Run Pysa
+        if: always()
+        needs: [ checkout ]
         uses: facebook/pysa-action@f46a63777e59268613bd6e2ff4e29f144ca9e88b
         with:
           repo-directory: './'
@@ -53,6 +61,8 @@ jobs:
           include-default-sapp-filters: true
 
       - name: Run Bandit
+        if: always()
+        needs: [ checkout ]
         uses: shundor/python-bandit-scan@9cc5aa4a006482b8a7f91134412df6772dbda22c
         with:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
