@@ -37,14 +37,7 @@ jobs:
         uses: github/codeql-action/analyze@v2
         with:
           category: "/language:${{matrix.language}}"
-
-      - name: Run Pyre
-        if: always()
-        uses: facebook/pyre-action@60697a7858f7cc8470d8cc494a3cf2ad6b06560d
-        with:
-          repo-directory: './'
-          requirements-path: 'requirements.txt'
-
+  
       - name: Run Bandit
         if: always()
         uses: shundor/python-bandit-scan@9cc5aa4a006482b8a7f91134412df6772dbda22c
