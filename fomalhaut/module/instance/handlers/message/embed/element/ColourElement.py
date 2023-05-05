@@ -2,7 +2,7 @@ from ......core import Final as _Final
 from ......core import Self as _Self
 
 
-class ColourElement(int):
+class ColourElement:
     """
     Embed에 사용할 색상을 정의합니다.
 
