@@ -28,10 +28,12 @@ class Heyst(_Instance):
         """
         인스턴스가 준비되면 호출됩니다.
         """
-        self.yt_handler = _Handler(self, self.settings['youtube'], self.settings['profile_art'])
+        self.yt_handler = _Handler(self, self.settings['youtube'])
         await super().on_ready()
 
     def schedules(self) -> None:
+        super().schedules()
+
         @self.schedule
         async def this() -> bool:
             return (await self.yt_handler.handle()).cache.success

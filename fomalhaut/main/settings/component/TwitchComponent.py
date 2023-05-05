@@ -11,6 +11,8 @@ class TwitchComponent:
     -----------
     target: str
         처리할 트위치 채널 ID
+    profile_art: str
+        트위치 채널 프로필 이미지 URL
     message: str
         트위치 채널이 스트리밍 중일 때
         Embed와 함께 보낼 메시지
@@ -24,6 +26,8 @@ class TwitchComponent:
     -----------
     target: Final[str]
         처리할 트위치 채널 ID
+    profile_art: Final[str]
+        트위치 채널 프로필 이미지 URL
     message: Final[str]
         트위치 채널이 스트리밍 중일 때
         Embed와 함께 보낼 메시지
@@ -36,9 +40,15 @@ class TwitchComponent:
     """
 
     def __init__(
-            self, target: str, message: str, offline: str, send: list[int]
+            self,
+            target: str,
+            profile_art: str,
+            message: str,
+            offline: str,
+            send: list[int]
     ) -> None:
         self.target: _Final[str] = target
+        self.profile_art: _Final[str] = profile_art
         self.message: _Final[str] = message
         self.offline: _Final[str] = offline
         self.send: _Final[list[int]] = send

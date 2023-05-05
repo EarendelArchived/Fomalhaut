@@ -11,6 +11,8 @@ class YouTubeComponent:
         처리할 유튜브 채널 ID
     target_id: str
         처리할 유튜브 채널 이름
+    profile_art: str
+        유튜브 채널 프로필 이미지 URL
     message: str
         영상 업로드 안내시 Embed와
         함께 보낼 메시지
@@ -25,6 +27,8 @@ class YouTubeComponent:
         처리할 유튜브 채널 ID
     target_id: Final[str]
         처리할 유튜브 채널 이름
+    profile_art: Final[str]
+        유튜브 채널 프로필 이미지 URL
     message: Final[str]
         영상 업로드 안내시 Embed와
         함께 보낼 메시지
@@ -34,9 +38,18 @@ class YouTubeComponent:
         영상 업로드 안내를 보낼 채널 리스트
     """
 
-    def __init__(self, target: str, target_id: str, message: str, description: str, send: list[int]):
+    def __init__(
+            self,
+            target: str,
+            target_id: str,
+            profile_art: str,
+            message: str,
+            description: str,
+            send: list[int]
+    ):
         self.target: _Final[str] = target
         self.target_id: _Final[str] = target_id
+        self.profile_art: _Final[str] = profile_art
         self.message: _Final[str] = message
         self.description: _Final[str] = description
         self.send: _Final[list[int]] = send

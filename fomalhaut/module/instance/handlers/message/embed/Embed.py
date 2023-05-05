@@ -6,6 +6,7 @@ from .element import AuthorElement as _Author
 from .element import ColourElement as _Color
 from .element import FieldElement as _Field
 from .element import FooterElement as _Footer
+from .....core import Self as _Self
 from .....core import Nullable as _Nullable
 
 

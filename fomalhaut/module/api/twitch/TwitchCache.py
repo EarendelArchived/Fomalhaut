@@ -1,12 +1,19 @@
 from datetime import datetime as _datetime
+from json import dumps as _to_json
 from json import JSONDecodeError as _JSONErr
 
 from ..common.BasicAPICache import BasicAPICache as _Interface
 from ...basicio.BasicIOHandler import BasicIOHandler as _Handler
-from ...core import Nullable as _Nullable
+from ...core import Any as _Any
 from ...core import Self as _Self
+from ...core import Final as _Final
+from ...core import Nullable as _Nullable
 from ...instance import Instance as _Instance
 from ...instance.handlers.message.embed import Embed as _Embed
+
+_start: _Final[str] = "start"
+_id: _Final[str] = "id"
+_embed: _Final[str] = "embed"
 
 
 class TwitchCache(_Interface):
@@ -24,9 +31,9 @@ class TwitchCache(_Interface):
     -----------
     img_handler: BasicIOHandler
         썸네일 이미지를 관리하는 핸들러
-    handled_id: list[list[int]]
+    id: list[list[int]]
         이전에 처리된 공지 메세지 ID 목록
-    handled_embed: Nullable[Embed]
+    embed: Nullable[Embed]
         이전에 처리된 공지 메세지 임베드
     success: bool
         API 정상 작동 여부
@@ -36,48 +43,54 @@ class TwitchCache(_Interface):
         방송 시작 시간
     """
 
-    def __init__(self, instance: _Instance, success: bool = True) -> None:
+    def __init__(self, instance: _Instance, target: str, success: bool = True) -> None:
         super().__init__(
-            instance, "TwitchCache", _Handler.from_cache(f"twitch/{instance.settings['twitch'].target}", "data.json"),
+            instance, "TwitchCache", _Handler.from_cache(f"twitch/{target}", "data.json"),
             success
         )
-        self.img_handler: _Handler = _Handler.from_cache(f"twitch/{instance.settings['twitch'].target}", "img.png")
-        self.handled_id: list[list[int]] = []
-        self.handled_embed: _Nullable[_Embed] = None
+        self.img_handler: _Handler = _Handler.from_cache(f"twitch/{target}", "img.png")
+        self.id: list[list[int]] = []
+        self.embed: _Nullable[_Embed] = None
         self.stream: bool = False
         self.start: _Nullable[_datetime] = None
 
         try:
             cache: _Nullable[dict] = self.handler.read()
 
-            if type(cache.get("start")) == _datetime:
-                self.start = cache['start']
-            elif type(cache.get("start")) is not None:
-                raise TypeError("TwitchCache.start is not datetime or None")
+            start: _Any = cache.get(_start)
+            if type(start) == str:
+                self.start = _datetime.fromisoformat(start)
+            elif start is not None:
+                raise TypeError(f"TwitchCache.{_start} is not str or None, but {type(start)}")
 
-            if type(cache.get("handled_id")) == list:
-                self.handled_id = cache['handled_id']
-            else:
-                raise TypeError("TwitchCache.handled_id is not list")
+            cache_id: _Any = cache.get(_id)
+            if type(cache_id) == list:
+                self.id = cache_id
+            elif cache_id is not None:
+                raise TypeError(f"TwitchCache.{_id} is not list, but {type(cache_id)}")
 
-            if type(cache.get("handled_embed")) == _Embed:
-                self.handled_embed = cache['handled_embed']
-            elif type(cache.get("handled_embed")) is not None:
-                raise TypeError("TwitchCache.handled_embed is not Embed or None")
+            embed: _Any = cache.get(_embed)
+            if type(embed) == dict:
+                self.embed = _Embed.from_dict(embed)
+            elif embed is not None:
+                raise TypeError(
+                    f"TwitchCache.{_embed} is not dict or None, but {type(embed)}"
+                )
         except _JSONErr:
-            self.handler.write(f'{{"start": {None}, "handled_id": [], "handled_embed": {None}}}')
+            print("Cached Json is corrupted or none, resetting.")
+            self.handler.write(f'{{"{_start}": "{None}", "{_id}": [], "{_embed}": "{None}"}}')
 
     # Overrides
     async def fail(self) -> _Self:
         """
         API가 처리에 실패했음을 반환합니다.
         """
-        self.handled_embed = None
-        self.handled_id = []
+        self.embed = None
+        self.id = []
         return await super().fail()
 
     async def update(
-            self, start: _datetime, msg_id: list[list[int]] = None, embed: _Embed = None
+            self, start: _datetime, cache_id: _Nullable[list[list[int]]] = None, embed: _Nullable[_Embed] = None
     ) -> _Self:
         """
         캐시 정보를 업데이트합니다.
@@ -86,13 +99,13 @@ class TwitchCache(_Interface):
         ----------
         start: datetime
             방송 시작 시간
-        msg_id: Optional[list[list[int]]]
+        cache_id: Optional[list[list[int]]]
             출력된 방송 공지 메세지의 ID 리스트
         embed: Optional[Embed]
             출력된 방송 공지 메세지의 임베드
         """
-        self.handled_id = [] if msg_id is None else msg_id
-        self.handled_embed = embed
+        self.id = self.id if cache_id is None else cache_id
+        self.embed = self.embed if embed is None else embed
         self.stream = True
         self.start = start
         return await self.save()
@@ -101,8 +114,8 @@ class TwitchCache(_Interface):
         """
         방송 중이 아님을 반환합니다.
         """
-        self.handled_id = []
-        self.handled_embed = None
+        self.id = []
+        self.embed = None
         self.stream = False
         return await self.save()
 
@@ -112,7 +125,10 @@ class TwitchCache(_Interface):
         """
         try:
             start: str = self.start.isoformat() if type(self.start) == _datetime else None
-            self.handler.write(f'{{"start": "{start}", "id": {self.handled_id}, "embed": "{self.handled_embed}"}}')
+            embed: str = _to_json(self.embed.to_dict()) if type(self.embed) == _Embed else f"\"{None}\""
+            self.handler.write(
+                f'{{"{_start}": "{start}", "{_id}": {self.id}, "{_embed}": {embed}}}'
+            )
         except Exception as e:
             self.success = False
             await self.throw(e, "save")
