@@ -1,14 +1,16 @@
-from json import loads as _json
+from json import loads as _as_json
+from json import dumps as _to_json
 from os import makedirs as _md
 from os.path import dirname as _dir
 from os.path import exists as _exist
 
 from discord import File as _File
 
-from ..core import Enum as _Enum
-from ..core import Final as _Final
 from ..core import Or as _Or
 from ..core import Self as _Self
+from ..core import Enum as _Enum
+from ..core import Final as _Final
+from ..core import Nullable as _Nullable
 
 
 class BasicIOHandler:
@@ -28,7 +30,7 @@ class BasicIOHandler:
         파일 경로
     """
 
-    class ReadType(_Enum):
+    class FileType(_Enum):
         """
         파일을 읽어올 때 반환할 값의 형태를 정의합니다.
 
@@ -50,13 +52,13 @@ class BasicIOHandler:
                 _md(path)
             open(self.path, 'x').close()
 
-    def read(self, read_type: ReadType = ReadType.JSON) -> _Or[str, dict]:
+    def read(self, file_type: FileType = FileType.JSON) -> _Or[str, dict]:
         """
         파일 내용을 읽어옵니다.
 
         Parameters
         ----------
-        read_type: ReadType
+        file_type: FileType
             읽어온 파일의 값을 반환하는 형태
         """
         value: str
@@ -64,11 +66,11 @@ class BasicIOHandler:
             value = f.read()
             f.close()
 
-        match read_type:
-            case self.ReadType.TEXT:
+        match file_type:
+            case self.FileType.TEXT:
                 return value
-            case self.ReadType.JSON:
-                return _json(value)
+            case self.FileType.JSON:
+                return _as_json(value)
             case _:
                 raise ValueError("Invalid read type")
 
@@ -82,15 +84,28 @@ class BasicIOHandler:
             f.close()
         return value
 
-    def write(self, content: str) -> _Self:
+    def write(self, content: _Or[str, dict], file_type: _Nullable[FileType] = FileType.JSON) -> _Self:
         """
         파일을 씁니다.
 
         Parameters
         ----------
-        content: str
+        content: Union[str, dict]
             파일에 쓸 내용
+        file_type: Nullable[FileType]
+            파일 형태
         """
+        match file_type:
+            case self.FileType.JSON:
+                if type(content) != dict:
+                    raise TypeError("Invalid content type")
+                content = _to_json(content)
+            case self.FileType.TEXT:
+                if type(content) != str:
+                    raise TypeError("Invalid content type")
+            case _:
+                raise ValueError("Invalid write type")
+
         with open(self.path, 'w') as f:
             f.write(content)
             f.close()
@@ -120,7 +135,9 @@ class BasicIOHandler:
         content: str
             첨부 파일의 내용
         """
-        return _File(cls("cache", "attachment.txt").write(content).path, filename="attachment.txt")
+        return _File(
+            cls.from_cache(".", "attachment.txt").write(content, cls.FileType.TEXT).path, filename="attachment.txt"
+        )
 
     @classmethod
     def from_cache(cls, path: str, file: str) -> _Self:

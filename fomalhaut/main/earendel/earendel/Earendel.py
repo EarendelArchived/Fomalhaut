@@ -27,7 +27,9 @@ class Earendel(_Instance):
     def commands(self) -> None:
         @self.tree.command(name="what_song", description="지금 무슨 노래 듣고 계세요?")
         async def this(i: _Itr) -> None:
-            await self.process(i, (await i.followup.send("뉴진스의 하입보이요")))
+            async def that() -> None:
+                await i.followup.send("뉴진스의 하입보이요")
+            await self.process(i, that)
 
         @self.tree.command(name="mention_everyone", description="통화방에 접속하지 않은 모든 멤버분들을 DM으로 멘션합니다.")
         async def this(i: _Itr, ch: _VoiceCh) -> None:
