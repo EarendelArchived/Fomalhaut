@@ -28,3 +28,10 @@
   - Twitch API 동기화 되지 않는 문제 해결, 캐시 문제 해결
   - 기타 코드 개선
   - 코드 분석 개선
+
+### 0.2.1.0
+- All
+  - `Instance.process()` 오류 처리 개선
+  - `embed.element.ColourElement` 보안 이슈 해결
+- Earendel
+  - `/what_song` 명령어 코루틴 대기 오류 해결

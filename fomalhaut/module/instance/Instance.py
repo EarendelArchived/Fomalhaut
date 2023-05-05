@@ -117,9 +117,9 @@ class Instance(_main.Client):
         except Exception as e:
             handled: _HandledMsg = self.handle_exc(e, f"Command.{interaction.command.name}")
             if handled.file is None:
-                await interaction.followup.send(handled.content, embed=handled.embed)
+                await interaction.followup.send(embed=handled.embed)
             else:
-                await interaction.followup.send(handled.content, embed=handled.embed, file=handled.file)
+                await interaction.followup.send(embed=handled.embed, file=handled.file)
 
     async def send(self, handled: _HandledMsg) -> None:
         """
