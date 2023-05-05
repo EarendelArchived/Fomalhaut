@@ -103,7 +103,6 @@ class BasicIOHandler:
             case self.FileType.TEXT:
                 if type(content) != str:
                     raise TypeError("Invalid content type")
-                pass
             case _:
                 raise ValueError("Invalid write type")
 

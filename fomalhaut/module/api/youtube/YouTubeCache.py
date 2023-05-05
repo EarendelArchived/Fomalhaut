@@ -48,10 +48,10 @@ class YouTubeCache(_Interface):
         try:
             cache: _Nullable[dict] = self.handler.read()
             if cache is not None:
-                self.video_id = cache["video_id"]
-                self.upload_date = cache["upload_date"]
+                self.video_id = cache[_video_id]
+                self.upload_date = cache[_upload_date]
         except (KeyError, _JSONErr):
-            self.handler.write({"video_id": None, "upload_date": None})
+            self.handler.write({_video_id: None, _upload_date: None})
 
     async def update(self, video_id: str, upload_date: _datetime) -> _Self:
         """
@@ -76,7 +76,7 @@ class YouTubeCache(_Interface):
         try:
             video_id: _Nullable[str] = self.video_id if type(self.video_id) == str else None
             upload_date: _Nullable[str] = self.upload_date.isoformat() if type(self.upload_date) == _datetime else None
-            self.handler.write({"video_id": video_id, "upload_date": upload_date})
+            self.handler.write({_video_id: video_id, _upload_date: upload_date})
         except Exception as e:
             self.success = False
             await self.instance.throw(e, "save")
