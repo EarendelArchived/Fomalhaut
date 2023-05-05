@@ -45,7 +45,7 @@ class Embed(_Embed):
             footer: _Nullable[_Footer] = None, fields: _Nullable[list[_Field]] = None
     ):
         super().__init__(
-            colour=colour, title=title, url=url, timestamp=timestamp, description=desc
+            colour=colour.value, title=title, url=url, timestamp=timestamp, description=desc
         )
 
         self.set_image(url=image).set_thumbnail(url=profile)

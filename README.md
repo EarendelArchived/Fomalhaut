@@ -35,3 +35,18 @@
   - `embed.element.ColourElement` 보안 이슈 해결
 - Earendel
   - `/what_song` 명령어 코루틴 대기 오류 해결
+
+### 0.2.2.0
+- All
+  - IO Handler
+    - 입력 타입을 파일 타입으로 변경
+    - `write()` 에 파일 타입을 설정할 수 있도록 변경 (기본값 `FileType.JSON`)
+  - Embed
+    - 임베드 컬러 핸들링 문제 해결
+  - Twitch API
+    - 캐시를 JSON으로 쓰도록 변경
+    - 방송중이 아닐 때 캐시 핸들링 오류 해결
+  - YouTube API
+    - 캐시를 JSON으로 쓰도록 변경
+- Earendel
+  - `/what_song` 명령어 코루틴 대기 오류 해결 (RE)

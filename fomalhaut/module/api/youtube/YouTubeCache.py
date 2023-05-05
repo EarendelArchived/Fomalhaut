@@ -3,10 +3,14 @@ from json import JSONDecodeError as _JSONErr
 
 from ..common.BasicAPICache import BasicAPICache as _Interface
 from ...basicio.BasicIOHandler import BasicIOHandler as _Handler
-from ...core import Nullable as _Nullable
 from ...core import Self as _Self
+from ...core import Final as _Final
+from ...core import Nullable as _Nullable
 from ...instance import Instance as _Instance
 from ....main.settings.component.YouTubeComponent import YouTubeComponent as _Target
+
+_video_id: _Final[str] = "video_id"
+_upload_date: _Final[str] = "upload_date"
 
 
 class YouTubeCache(_Interface):
@@ -47,7 +51,7 @@ class YouTubeCache(_Interface):
                 self.video_id = cache["video_id"]
                 self.upload_date = cache["upload_date"]
         except (KeyError, _JSONErr):
-            self.handler.write('{"video_id": null, "upload_date": null}')
+            self.handler.write({"video_id": None, "upload_date": None})
 
     async def update(self, video_id: str, upload_date: _datetime) -> _Self:
         """
@@ -70,9 +74,9 @@ class YouTubeCache(_Interface):
         캐시를 저장합니다
         """
         try:
-            video_id: _Nullable[str] = "null" if type(self.video_id) != str else self.video_id
-            upload_date: _Nullable[_datetime] = "null" if type(self.upload_date) != _datetime else self.upload_date
-            self.handler.write(f'{{"video_id": "{video_id}", "upload_date": "{upload_date}"}}')
+            video_id: _Nullable[str] = self.video_id if type(self.video_id) == str else None
+            upload_date: _Nullable[str] = self.upload_date.isoformat() if type(self.upload_date) == _datetime else None
+            self.handler.write({"video_id": video_id, "upload_date": upload_date})
         except Exception as e:
             self.success = False
             await self.instance.throw(e, "save")

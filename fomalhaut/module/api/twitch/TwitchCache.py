@@ -77,8 +77,8 @@ class TwitchCache(_Interface):
                     f"TwitchCache.{_embed} is not dict or None, but {type(embed)}"
                 )
         except _JSONErr:
-            print("Cached Json is corrupted or none, resetting.")
-            self.handler.write(f'{{"{_start}": "{None}", "{_id}": [], "{_embed}": "{None}"}}')
+            self.instance.logger.log("Cache is corrupted or none, resetting.")
+            self.handler.write({_start: None, _id: [], _embed: None})
 
     # Overrides
     async def fail(self) -> _Self:
@@ -124,11 +124,9 @@ class TwitchCache(_Interface):
         캐시를 저장합니다.
         """
         try:
-            start: str = self.start.isoformat() if type(self.start) == _datetime else None
-            embed: str = _to_json(self.embed.to_dict()) if type(self.embed) == _Embed else f"\"{None}\""
-            self.handler.write(
-                f'{{"{_start}": "{start}", "{_id}": {self.id}, "{_embed}": {embed}}}'
-            )
+            start: _Nullable[str] = self.start.isoformat() if type(self.start) == _datetime else None
+            embed: _Nullable[str] = _to_json(self.embed.to_dict()) if type(self.embed) == _Embed else None
+            self.handler.write({_start: start, _id: self.id, _embed: embed})
         except Exception as e:
             self.success = False
             await self.throw(e, "save")

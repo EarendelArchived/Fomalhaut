@@ -47,7 +47,7 @@ class TwitchHandler(_Interface):
             캐시
         """
         try:
-            if not cache.id and cache.start is not None:
+            if cache.id and cache.start is not None:
                 await self.instance.send_to(
                     "", edit_target=cache.id,
                     embed=_Field(
